@@ -3,7 +3,7 @@
  on a multicast group. Other programs can join the group and receive the sound. The
  measures are transported in json payloads with the following format:
 
-   {"uuid": "baef6775-eb3a-4ac9-85d3-70e4aa0d9d94","sound":"ti-ta-ti","activeSince":1394656712850}
+   {"uuid": "baef6775-eb3a-4ac9-85d3-70e4aa0d9d94","sound":"ti-ta-ti"}
 
  Usage: to start a musician, type the following command in a terminal
         (of course, you can run several musician in parallel and observe that all
@@ -37,9 +37,9 @@ function Musician(instrumentName) {
 
     //Create a data according the data  
     var data = {};
+
     data.uuid = uuidv4();
     data.sound = orchestra.getSound(instrumentName);
-    data.activeSince = new Date().toISOString();
 
     var payload = JSON.stringify(data);
 
@@ -56,7 +56,7 @@ function Musician(instrumentName) {
         sock.send(message, 0, message.length, protocol.PROTOCOL_PORT, protocol.PROTOCOL_MULTICAST_ADDRESS, function(err, bytes) {
             console.log("Sending payload: " + payload + " via port " + sock.address().port);
         });
-    }, 500);
+    }, 1000);
 
 }
 
@@ -66,12 +66,24 @@ if (process.argv.length > 2) {
      * Let's get the instrument type from the command line attributes
      * Some error handling wouln't hurt here...
      */
-    var name = process.argv[2];
-    /*
-     * Let's create a new musician - the regular publication of measures will
-     * be initiated within the constructor
-     */
-    var M = new Musician(name);
+    var InstrumentName = process.argv[2];
+
+    //check up the argument accroding the vailable instrument
+
+    if (orchestra.getSound(InstrumentName) != null) {
+        /*
+         * Let's create a new musician - the regular publication of measures will
+         * be initiated within the constructor
+         */
+        var M = new Musician(name);
+    } else {
+        console.log("This instrument does not exist!");
+
+        console.log("This is the available instrument: " + JSON.stringify(orchestra.listInstrument()));
+        console.log("Retry again > _ <");
+    }
+
+
 
 } else {
 

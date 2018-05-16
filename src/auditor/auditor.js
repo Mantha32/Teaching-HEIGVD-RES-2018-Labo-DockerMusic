@@ -1,13 +1,14 @@
 /*
  This program simulates a auditor, which joins a multicast
  group in order to receive measures published by mucisian.
- The sound played by musician are transported in json payloads with the following format:
+ The sound played by auditor are transported in json payloads with the following format:
 
      {"uuid" : "aa7d8cb3-a15f-4f06-a0eb-b8feb6244a60","instrument" : "piano","activeSince" : "2016-04-27T05:20:50.731Z"}
 
- Usage: to start the station, use the following command in a terminal
+ Usage: to start the auditor, use the following command in a terminal
 
    node auditor.js
+   node auditor.js address_IP port
 
 */
 
@@ -19,7 +20,59 @@
 var protocolUdp = require('../lib/./music-protocol'); // loads music-protocol.js
 var InstrumentSound = require('../lib/./instrument-sound'); // loads instrument-sound.js
 var instrumentSound = new InstrumentSound();
+var HashMap = require('hashmap');
 
+/*----------------------------- DATA STRUCTURE -----------------------------------*/
+
+/*
+ * Create the data structure we use in the payload sending by tcp server accrording the following format
+ * {"uuid" : "aa7d8cb3-a15f-4f06-a0eb-b8feb6244a60","instrument" : "piano","activeSince" : "2016-04-27T05:20:50.731Z"}
+ */
+function MusicianToken(uuid, instrument, since) {
+    this.uuid = uuid;
+    this.instrument = instrument;
+    this.activeSince = since;
+}
+
+function Orchestra(map) {
+    this.musicianList = map; //store the message sending by server UDP
+
+    //Update if the orchestra contains the new musician otherwise create new one
+    this.set = function(msgObj) {
+
+        var tmpMusi = new MusicianToken(msgObj.uuid, instrumentSound.getInstrument(msgObj.sound), new Date().toISOString());
+
+        if (this.musicianList.has(msgObj.uuid)) {
+            this.musicianList.delete(msgObj.uuid);
+        }
+
+        this.musicianList.set(msgObj.uuid, tmpMusi);
+    };
+
+    //perform this process when a client TCP retrieve the orchestra state
+    this.update = function() {
+        this.musicianList.forEach(function(value, key) {
+            var timestamp = Date.now() - Date.parse(value.activeSince);
+
+            //Delete the inactive musician 
+            if (timestamp > 5000) {
+                this.musicianList.delete(key);
+            }
+        }, this);
+    };
+
+    this.getPayloadArrayTCP = function() {
+        var payload = new Array();
+
+        //Clean up the orchestra before set up this process
+        this.update();
+
+        return this.musicianList.values();
+    };
+
+};
+
+/*----------------------------- UDP SIDE -----------------------------------*/
 
 /*
  * We use a standard Node.js module to work with UDP
@@ -27,12 +80,9 @@ var instrumentSound = new InstrumentSound();
 var dgram = require('dgram');
 
 /*
- * This data store the active musician using hashmap
- * The entire inbound message is the hashmap key
+ * Create the orchestra datra who held the inbound message from the server UDP 
  */
-var HashMap = require('hashmap');
-var orchestra = new HashMap();
-
+var orchestra = new Orchestra(new HashMap());
 /* 
  * Let's create a datagram socket. We will use it to listen for datagrams published in the
  * multicast group by musician and containing sound
@@ -48,47 +98,42 @@ sock.bind(protocolUdp.PROTOCOL_PORT, function() {
  * update the muscian list if it is necessary
  */
 sock.on('message', function(msg, source) {
+
     console.log("Data has arrived: " + msg + ". Source port: " + source.port);
-    orchestra.set(msg, new Date());
+
+    var messageObj = JSON.parse(msg);
+    orchestra.set(messageObj);
 });
 
-var getOrchestra = function(msg) {
-    var orchestraArray = orchestra.keys();
-    for (count = 0; count < orchestraArray.length; count++) {
-        orchestraArray
-    }
-}
 
+/*----------------------------- TCP SERVER SIDE -----------------------------------*/
 /*
  * Create the TCP server
  */
+
+
 var net = require('net');
-var protocolTcp = require('../lib/./tcp-protocol');
+var protocolTcp = require('../lib/./tcp-protocol'); // load tcp-protocol.js 
+
+/*
+ * Fetch the protocol address and port
+ * we can override this value in command line 
+ */
 var HOST = protocolTcp.PROTOCOL_ADDRESS;
 var PORT = protocolTcp.PROTOCOL_PORT;
 
-// Create a server instance
-// The function passed to net.createServer() becomes the event handler for the 'connection' event
-// The socket object the callback function receives UNIQUE for each connection
+/* Create a server instance
+ * The function passed to net.createServer() becomes the event handler for the 'connection' event
+ * The socket object the callback function receives UNIQUE for each connection
+ */
 var server = net.createServer(function(socket) {
 
     // We have a connection - a socket object is assigned to the connection automatically
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
 
 
-    //Fetch information about the orchestra
-    var date = new Date().toISOString();
-    var msg = {
-        type: "date",
-        value: date
-    };
-
-    var listMsg = new Array(msg);
-    listMsg.push(msg);
-    var payload = '';
-
-    payload = JSON.stringify(listMsg) + '\r\n';
-    console.log('Sending the data, end up the connexion to the client TCP' + payload);
+    var payload = JSON.stringify(orchestra.getPayloadArrayTCP()) + '\r\n';
+    console.log('Sending the data, end up the connexion to the client TCP: ' + payload);
 
     // Write the message to the socket, the client will receive it as data from the server
     socket.write(payload);
@@ -98,7 +143,15 @@ var server = net.createServer(function(socket) {
     socket.destroy();
 });
 
-
+/*
+ * We assume that the user line up the argument properly
+ * override the address and port
+ * node auditor.js address_ip port
+ */
+if (process.argv.length > 2) {
+    HOST = process.argv[2];
+    PORT = process.argv[3];
+}
 
 //The server listen to it
 server.listen(PORT, HOST);

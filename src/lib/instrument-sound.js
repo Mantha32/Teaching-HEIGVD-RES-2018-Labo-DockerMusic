@@ -29,17 +29,23 @@ var orchestra = function() {
         return null;
     };
 
-    this.getInstrument = function(Iname) {
+    this.getInstrument = function(soundName) {
 
         for (index in orchestraInstr) {
-            if (Iname === orchestraInstr[index].instrument)
-                return orchestraInstr[index];
+            if (soundName === orchestraInstr[index].sound)
+                return orchestraInstr[index].instrument;
         }
 
         return null;
     }
 
+    this.listInstrument = function() {
+        var temp = new Array();
 
+        orchestraInstr.forEach(element => { temp.push(element.instrument) });
+
+        return temp;
+    }
 
 }
 
