@@ -13,8 +13,8 @@
 
 */
 
-var protocol = require('../lib/./music-protocol'); // loads music-protocol.js
-var Orchestra = require('../lib/./instrument-sound'); // loads instrument-sound.js
+var protocol = require('./music-protocol'); // loads music-protocol.js
+var Orchestra = require('./instrument-sound'); // loads instrument-sound.js
 var orchestra = new Orchestra();
 const uuidv4 = require('uuid/v4'); //fast generation of RFC4122 UUIDS, random version 4
 /*

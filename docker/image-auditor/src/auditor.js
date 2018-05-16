@@ -20,8 +20,8 @@
  * auditor.js and mucisian.js. The address and the port are part of our simple 
  * application-level protocol
  */
-var protocolUdp = require('../lib/./music-protocol'); // loads music-protocol.js
-var InstrumentSound = require('../lib/./instrument-sound'); // loads instrument-sound.js
+var protocolUdp = require('./music-protocol'); // loads music-protocol.js
+var InstrumentSound = require('./instrument-sound'); // loads instrument-sound.js
 var instrumentSound = new InstrumentSound();
 var HashMap = require('hashmap');
 
@@ -114,7 +114,7 @@ sock.on('message', function(msg, source) {
 
 
 var net = require('net');
-var protocolTcp = require('../lib/./tcp-protocol'); // load tcp-protocol.js 
+var protocolTcp = require('./tcp-protocol'); // load tcp-protocol.js 
 
 /*
  * Fetch the protocol address and port

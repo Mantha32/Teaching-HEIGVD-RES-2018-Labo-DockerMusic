@@ -13,9 +13,11 @@ LABEL version="1.0"
 # Replace the directory with your own directory that stands the source file
 # example /tmp/dockerMusic/musician/src
 #
-ENV DIRECTORY /tmp/dockerMusic/musician/src/
+ENV DIRECTORY /tmp/dockerMusic/musician/
 
 ADD src DIRECTORY
+
+RUN npm install
 
 WORKDIR DIRECTORY
 
