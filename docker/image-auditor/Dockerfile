@@ -20,7 +20,7 @@ ADD src DIRECTORY
 
 WORKDIR DIRECTORY
 
-RUN npm install
+RUN npm install --save
 
 #The container listen in this specific ports
 #The port 2205/tcp is used to musician server
@@ -29,4 +29,4 @@ EXPOSE 2205
 #The default argument for the ENTREPOINT
 #The argument "-p 2525" stand for the port the musician broadcast his performance
 
-ENTRYPOINT ["node","auditor.js", "-p", "2505"]
+ENTRYPOINT ["node","auditor.js"]
