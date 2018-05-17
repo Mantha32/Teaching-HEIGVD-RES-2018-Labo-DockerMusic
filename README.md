@@ -111,7 +111,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | Who is going to **listen for UDP datagrams** and what should happen when a datagram is received? |
 | | *The auditor has a client udp interface. The auditor listen all actif musician wrapped in docker container. The auditor handle the UDP datagram sending by dockerised musician. The Auditor update his musician list depend on the received datagram.* |
 |Question | What **payload** should we put in the UDP datagrams? |
-| | *The payload is in jason format fashion. The format uses this pattern {"type": [success, fail], "value": {"instrument": [type of istrument], "sound": [sound of the instrument]}} when the value respect the instrument data structure* |
+| | *The payload is in jason format fashion. The format uses this pattern {"uuid": [xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx], "sound": [sound of the instrument]} when the value respect the instrument data structure* |
 |Question | What **data structures** do we need in the UDP sender and receiver? When will we update these data structures? When will we query these data structures? |
 | | *We need the **instrumentFeature** data structure in the UDP sender and receiver. These data structure we will update when we add or remove instrument(s) or add some feature in the instrument. Define payload exchange between client et server UDP such a protocol. {"uuid": "baef6775-eb3a-4ac9-85d3-70e4aa0d9d94","sound":"ti-ta-ti"} * |
 
