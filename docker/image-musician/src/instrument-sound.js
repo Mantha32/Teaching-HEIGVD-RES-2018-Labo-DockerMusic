@@ -9,15 +9,15 @@ function InstrumentType(name, sound) {
     this.instrument = name;
     this.sound = sound;
 }
+
 var piano = new InstrumentType("piano", "ti-ta-ti");
 var trumpet = new InstrumentType("trumpet", "pouet");
 var flute = new InstrumentType("flute", "trulu");
 var violin = new InstrumentType("violin", "gzi-gzi");
 var drum = new InstrumentType("drum", "boum-boum");
 
-var orchestraInstr = new Array(piano, trumpet, flute, violin, drum);
-
-var orchestra = function() {
+var InstrumentFeature = function() {
+    var orchestraInstr = new Array(piano, trumpet, flute, violin, drum);
 
     this.getSound = function(Iname) {
 
@@ -49,4 +49,4 @@ var orchestra = function() {
 
 }
 
-module.exports = orchestra;
+module.exports = InstrumentFeature;
