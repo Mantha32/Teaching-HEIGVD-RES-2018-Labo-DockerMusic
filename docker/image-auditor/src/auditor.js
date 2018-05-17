@@ -29,10 +29,15 @@ var HashMap = require('hashmap');
  * Create the data structure we use in the payload sending by tcp server accrording the following format
  * {"uuid" : "aa7d8cb3-a15f-4f06-a0eb-b8feb6244a60","instrument" : "piano","activeSince" : "2016-04-27T05:20:50.731Z"}
  */
-function MusicianToken(uuid, instrument, since) {
+function Musician(uuid, instrument, since) {
     this.uuid = uuid;
     this.instrument = instrument;
     this.activeSince = since;
+}
+
+function MusicianToken(uuid, instrument, since) {
+    this.musician = new Musician(uuid, instrument, since);
+    this.lastActivity = since;
 }
 
 function Orchestra(map) {
@@ -42,7 +47,7 @@ function Orchestra(map) {
     this.set = function(msgObj) {
 
         if (this.musicianList.has(msgObj.uuid)) {
-            this.musicianList.get(msgObj.uuid).activeSince = new Date().toISOString();
+            this.musicianList.get(msgObj.uuid).lastActivity = new Date().toISOString();
         } else {
             var tmpMusi = new MusicianToken(msgObj.uuid, instrumentFeature.getInstrument(msgObj.sound), new Date().toISOString());
             this.musicianList.set(msgObj.uuid, tmpMusi);
@@ -52,7 +57,7 @@ function Orchestra(map) {
     //perform this process when a client TCP retrieve the orchestra state
     this.update = function() {
         this.musicianList.forEach(function(value, key) {
-            var timestamp = Date.now() - Date.parse(value.activeSince);
+            var timestamp = Date.now() - Date.parse(value.lastActivity);
 
             //Delete the inactive musician 
             if (timestamp > 5000) {
@@ -67,7 +72,12 @@ function Orchestra(map) {
         //Clean up the orchestra before set up this process
         this.update();
 
-        return this.musicianList.values();
+        var tmp = [];
+        this.musicianList.forEach(function(value, key) {
+            tmp.push(value.musician);
+        });
+
+        return tmp;
     };
 
 };
