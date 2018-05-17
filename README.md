@@ -3,10 +3,10 @@
 ## Admin
 
 * Every student must do the implementation and have a repo with the code at the end of the process (to acquire the skills).
-* It is up to you if you want to fork this repo, or if you prefer to work in a private repo. However, you have to use exactly the same directory structure for the validation procedure to work. 
+* It is up to you if you want to fork this repo, or if you prefer to work in a private repo. However, you have to use exactly the same directory structure for the validation procedure to work.
 * ** There will be no grade for this lab. However, if you work on it seriously, the next challenge will be very easy (just be careful: the challenge will be done on a short period, so don't be late!)**
 * We expect that you will have more issues and questions than with other labs (because we have a left some questions open on purpose). Please ask your questions on telegram or in the forum, so that everyone in the class can benefit from the discussion.
- 
+
 ## Objectives
 
 This lab has 4 objectives:
@@ -153,7 +153,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How do we **stop/kill** one running container?
 | | *docker rm container-name ou id-container*
 |Question | How can we check that our running containers are effectively sending UDP datagrams?
-| | *Use wireshark or tcpd_dump*
+| | *Use wireshark or tcpd_dump. This application show off the sending UDP datagrams.*
 
 
 ## Task 4: implement an "auditor" Node.js application
@@ -162,13 +162,13 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | ---  | ---
 |Question | With Node.js, how can we listen for UDP datagrams in a multicast group?
 | | *Create a UDP4 socket client and join the multicast group with the method dgram.createSocket('udp4').addMembership(addr_multicastGroup).*
-|Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**? 
+|Question | How can we use the `Map` built-in object introduced in ECMAScript 6 to implement a **dictionary**?
 | | *The dictionnary implementing `Map` help us to build the instrument list and his features. I use hashMap.*
-|Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting? 
+|Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?
 | | *Parse and format date like moment().format('L')  01/14/2013*
-|Question | When and how do we **get rid of inactive players**? 
-| | *We can use at least  two ways to deal with. The first one, define a scheduler for each timestamp a idle function is runned using the map who hold the data. The second on , clean up the map when a client fetch the data from the server. I prefer the second on because it do not need a schedule just running the cleaner the server catch up a request from a client*
-|Question | How do I implement a **simple TCP server** in Node.js? 
+|Question | When and how do we **get rid of inactive players**?
+| | *We can use at least  two ways to deal with. The first one, define a scheduler for each timestamp an idle function is runned using the map `Orchestra` who hold the instrument list. The second on , clean up the map when a client fetch the data from the server. I prefer the second one because it do not need a scheduler. The auditor just cleans the data structure `Orchestra` when the server catch up a request from a client.*
+|Question | How do I implement a **simple TCP server** in Node.js?
 | | *Create a server instance. The function passed to net.createServer() becomes the event handler for the 'connection' event. The socket object receives UNIQUE request for each connection and the callback function the fucntion who perfom and build the message. The message represente the data without the inactive players.*
 
 
