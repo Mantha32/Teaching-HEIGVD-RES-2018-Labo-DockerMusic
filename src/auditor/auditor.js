@@ -38,16 +38,15 @@ function MusicianToken(uuid, instrument, since) {
 function Orchestra(map) {
     this.musicianList = map; //store the message sending by server UDP
 
-    //Update if the orchestra contains the new musician otherwise create new one
+    //Update the date if the orchestra contains this object with msgObj.uuid,  otherwise create new one
     this.set = function(msgObj) {
 
-        var tmpMusi = new MusicianToken(msgObj.uuid, instrumentFeature.getInstrument(msgObj.sound), new Date().toISOString());
-
         if (this.musicianList.has(msgObj.uuid)) {
-            this.musicianList.delete(msgObj.uuid);
+            this.musicianList.get(msgObj.uuid).activeSince = new Date().toISOString();
+        } else {
+            var tmpMusi = new MusicianToken(msgObj.uuid, instrumentFeature.getInstrument(msgObj.sound), new Date().toISOString());
+            this.musicianList.set(msgObj.uuid, tmpMusi);
         }
-
-        this.musicianList.set(msgObj.uuid, tmpMusi);
     };
 
     //perform this process when a client TCP retrieve the orchestra state
