@@ -21,8 +21,8 @@
  * application-level protocol
  */
 var protocolUdp = require('../lib/./music-protocol'); // loads music-protocol.js
-var InstrumentSound = require('../lib/./instrument-sound'); // loads instrument-sound.js
-var instrumentSound = new InstrumentSound();
+var InstrumentFeature = require('../lib/./instrument-sound'); // loads instrument-sound.js
+var instrumentFeature = new InstrumentFeature();
 var HashMap = require('hashmap');
 
 /*
@@ -41,7 +41,7 @@ function Orchestra(map) {
     //Update if the orchestra contains the new musician otherwise create new one
     this.set = function(msgObj) {
 
-        var tmpMusi = new MusicianToken(msgObj.uuid, instrumentSound.getInstrument(msgObj.sound), new Date().toISOString());
+        var tmpMusi = new MusicianToken(msgObj.uuid, instrumentFeature.getInstrument(msgObj.sound), new Date().toISOString());
 
         if (this.musicianList.has(msgObj.uuid)) {
             this.musicianList.delete(msgObj.uuid);
@@ -88,17 +88,17 @@ var orchestra = new Orchestra(new HashMap());
  * Let's create a datagram socket. We will use it to listen for datagrams published in the
  * multicast group by musician and containing sound
  */
-var sock = dgram.createSocket('udp4');
-sock.bind(protocolUdp.PROTOCOL_PORT, function() {
+var socketUDP = dgram.createSocket('udp4');
+socketUDP.bind(protocolUdp.PROTOCOL_PORT, function() {
     console.log("Joining multicast group");
-    sock.addMembership(protocolUdp.PROTOCOL_MULTICAST_ADDRESS);
+    socketUDP.addMembership(protocolUdp.PROTOCOL_MULTICAST_ADDRESS);
 });
 
 /* 
  * This call back is invoked when a new datagram has arrived.
  * update the muscian list if it is necessary
  */
-sock.on('message', function(msg, source) {
+socketUDP.on('message', function(msg, source) {
 
     console.log("Data has arrived: " + msg + ". Source port: " + source.port);
 
@@ -127,7 +127,7 @@ var PORT = protocolTcp.PROTOCOL_PORT;
  * The function passed to net.createServer() becomes the event handler for the 'connection' event
  * The socket object the callback function receives UNIQUE for each connection
  */
-var server = net.createServer(function(socket) {
+var serverTCP = net.createServer(function(socket) {
 
     // We have a connection - a socket object is assigned to the connection automatically
     console.log('CONNECTED: ' + socket.remoteAddress + ':' + socket.remotePort);
@@ -156,7 +156,7 @@ if (process.argv.length > 2) {
 }
 
 //The server listen to it
-server.listen(PORT, HOST);
+serverTCP.listen(PORT, HOST);
 
 //Log fot server TCP side
 console.log('Server TCP listening on ' + HOST + ':' + PORT);

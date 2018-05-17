@@ -14,8 +14,8 @@
 */
 
 var protocol = require('../lib/./music-protocol'); // loads music-protocol.js
-var Orchestra = require('../lib/./instrument-sound'); // loads instrument-sound.js
-var orchestra = new Orchestra();
+var InstrumentFeature = require('../lib/./instrument-sound'); // loads instrument-sound.js
+var instrumentFeature = new InstrumentFeature();
 const uuidv4 = require('uuid/v4'); //fast generation of RFC4122 UUIDS, random version 4
 /*
  * We use a standard Node.js module to work with UDP
@@ -64,7 +64,7 @@ if (process.argv.length > 2) {
      * Let's get the instrument type from the command line attributes
      * Some error handling wouln't hurt here...
      */
-    var SName = orchestra.getSound(process.argv[2]);
+    var SName = instrumentFeature.getSound(process.argv[2]);
 
     //check up the argument accroding the vailable instrument
 
@@ -76,7 +76,7 @@ if (process.argv.length > 2) {
     } else {
         console.log("This instrument does not exist!");
 
-        console.log("This is the available instrument: " + JSON.stringify(orchestra.listInstrument()));
+        console.log("This is the available instrument: " + JSON.stringify(instrumentFeature.listInstrument()));
         console.log("Retry again > _ <");
     }
 
