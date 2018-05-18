@@ -125,17 +125,17 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | What is **npm**?
 | | ***npm** stand for Node Package Manager. npm is a default package manager for Node . It is a software registry that contains packages that developer can use on this own project. npm can install in local or global mode.*
 |Question | What is the `npm install` command and what is the purpose of the `--save` flag?
-| | *This command install the package locally in your system and any packages that it depends on. This will create the **node_modules** directory in your current directory (if one doesn't exist yet) and will download the package to that directory. Ths `--save` flag is used in the previous npm version to save the dependency in the **packages.json**.*
+| | *This command install the package locally in your system and any packages that it depends on. This will create the **node_modules** directory in your current directory (if one doesn't exist yet) and will download the package to that directory. Ths `--save` flag is used in the previous npm version to save the dependency in the **packages.json** locally.*
 |Question | How can we use the `https://www.npmjs.com/` web site?
-| | *Thanks to this web site, we can find out the package that we need in our project.*
+| | *Thanks to this web site, we can find out the module that we need in our project.*
 |Question | In JavaScript, how can we **generate a UUID** compliant with RFC4122?
-| | *According the RFC4122 version 4, randomize the offset in this regex **'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'**. the npm web site provides some packages to genereate a UUID.*
+| | *According the RFC4122 version 4, randomize the offset in this regex **'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'**. the npm web site provides some module to generate a UUID. This UUID is used to identify un object and unique.*
 |Question | In Node.js, how can we execute a function on a **periodic** basis?
-| | *Node provides the global module **timer**. This timer exposes **setInterval(callback, delay[, ...args])** function which the callback is the fucntion calls when the timer elapses. This function schedules repeated execution of callback every delay milliseconds. This function fits our need.*
+| | *Node provides the global module **timer**. This timer exposes **setInterval(callback, delay[, ...args])** function which the callback is the function calls when the timer elapses. This function schedules repeated execution of callback every delay milliseconds. This function fits our need.*
 |Question | In Node.js, how can we **emit UDP datagrams**?
 | | *Node exposes the UDP module. this module provides  an implementation of UDP Datagram sockets.*
 |Question | In Node.js, how can we **access the command line arguments**?
-| | *This command looks like **node [options] script.js [arguments]** .The arguments are stored in `process.argv` which is an array containing the command line arguments. The first element will be 'node', the second element will be the name of the JavaScript file. The next elements will be any additional command line arguments.*
+| | *This command looks like **node [options] script.js [arguments]** .The arguments are stored in `process.argv` which is an array containing the command line arguments. The first element will be 'node', the second element will be the name of the JavaScript file(the application name). The next elements will be any additional command line arguments that the application can use in.*
 
 
 ## Task 3: package the "musician" app in a Docker image
@@ -143,11 +143,11 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 | #  | Topic
 | ---  | ---
 |Question | How do we **define and build our own Docker image**?
-| | *Set up the directory with your own directory that stands the source file. Run the command **npm install** which build the dependencies define in the `package.json`. And finally, define the entrypoint with our source code.*
+| | *Set up the directory with our own directory that stands the source file. Run the command **npm install --save ** which build the dependencies define in the `package.json`. And finally, define the `entrypoint` with our source code. This `entrypoint` define the command that we use to run our application in docker container.*
 |Question | How can we use the `ENTRYPOINT` statement in our Dockerfile?
 | | *We can use the `ENTRYPOINT` to configure a caontainer will run as an executable*
 |Question | After building our Docker image, how do we use it to **run containers**?
-| | *docker run <image> arg *
+| | *docker run image-name arg *
 |Question | How do we get the list of all **running containers**?
 | | *docker ps -a*
 |Question | How do we **stop/kill** one running container?
@@ -167,7 +167,7 @@ When you connect to the TCP interface of the **Auditor**, you should receive an 
 |Question | How can we use the `Moment.js` npm module to help us with **date manipulations** and formatting?
 | | *Parse and format date like moment().format('L')  01/14/2013*
 |Question | When and how do we **get rid of inactive players**?
-| | *We can use at least  two ways to deal with. The first one, define a scheduler for each timestamp an idle function is runned using the map `Orchestra` who hold the instrument list. The second on , clean up the map when a client fetch the data from the server. I prefer the second one because it do not need a scheduler. The auditor just cleans the data structure `Orchestra` when the server catch up a request from a client.*
+| | *We can use at least  two ways to deal with. The first one, define a scheduler for each timestamp an idle function is runned using the map `Orchestra` who hold the instrument list. The second one , clean up the map when a client fetch the data from the server. I prefer the second one because it do not need a scheduler. The auditor just cleans the data structure `Orchestra` when the server catch up a request from a client.*
 |Question | How do I implement a **simple TCP server** in Node.js?
 | | *Create a server instance. The function passed to net.createServer() becomes the event handler for the 'connection' event. The socket object receives UNIQUE request for each connection and the callback function the fucntion who perfom and build the message. The message represente the data without the inactive players.*
 
